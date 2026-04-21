@@ -1,22 +1,22 @@
+import 'dotenv/config';
 import express from 'express';
-
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import pg from 'pg';
 
 const app = express();
 const server = createServer(app);
-
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
 
 const io = new Server(server, {
-  cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    methods: ['GET', 'POST'],
-  }
+    cors: { origin: CORS_ORIGIN }
 });
-//PostgreSQL connection
-const pool = new pg.Pool({
-    connectionString: process.env.DATABASE_URL,
+
+// DB setup
+console.log('DATABASE_URL:', process.env.DATABASE_URL ?? 'UNDEFINED');
+
+const db = new pg.Pool({
+    connectionString: process.env.DATABASE_URL
 });
 
 

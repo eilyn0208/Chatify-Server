@@ -19,7 +19,6 @@ const io = new Server(server, {
 const pool = new pg.Pool({
     connectionString: process.env.DATABASE_URL,
 });
-    console.log(process.env.DATABASE_URL ? 'Connected to PostgreSQL' : 'DATABASE_URL not set')
 
 
 //create 

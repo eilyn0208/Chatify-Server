@@ -11,7 +11,8 @@ const io = new Server(server, {
     origin: /\.vercel\.app$/,
     methods: ['GET', 'POST'],
     credentials: true
-  }
+  },
+  transports: ['websocket'], // ← mismo aquí
 });
 
 const pool = new pg.Pool({
@@ -31,7 +32,7 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', async (socket) => {
-  console.log('a user connected', socket.id);
+  console.log('connected', socket.id);
 
   if (!socket.recovered) {
     try {
@@ -48,7 +49,6 @@ io.on('connection', async (socket) => {
   }
 
   socket.on('chat message', async (msg) => {
-    console.log('message: ' + msg);
     try {
       const result = await pool.query(
         'INSERT INTO messages (content) VALUES ($1) RETURNING id',
@@ -61,7 +61,7 @@ io.on('connection', async (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('User disconnected', socket.id);
+    console.log('disconnected', socket.id);
   });
 });
 
